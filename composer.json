@@ -17,7 +17,8 @@
         }
     ],
     "require": {
-        "php" : "~7.2"
+        "php": "~7.2",
+        "ieim/laravel-contracts": "dev-master"
     },
     "require-dev": {
         "mockery/mockery": "^1.3",
