@@ -25,6 +25,9 @@
         "phpunit/phpunit": ">=7.0",
         "squizlabs/php_codesniffer": "^3.0"
     },
+    "config": {
+        "sort-packages": true
+    },
     "autoload": {
         "psr-4": {
             "Ieim\\LaravelControllerHelpers\\": "src"
@@ -36,11 +39,8 @@
         }
     },
     "scripts": {
-        "test": "phpunit",
         "check-style": "phpcs src tests",
-        "fix-style": "phpcbf src tests"
-    },
-    "config": {
-        "sort-packages": true
+        "fix-style": "phpcbf src tests",
+        "test": "phpunit"
     }
 }
