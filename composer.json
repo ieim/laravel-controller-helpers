@@ -36,7 +36,8 @@
     },
     "autoload-dev": {
         "psr-4": {
-            "Ieim\\LaravelControllerHelpers\\Tests\\": "tests/Units"
+            "Ieim\\LaravelControllerHelpers\\Tests\\": "tests/Units",
+            "Ieim\\LaravelControllerHelpers\\Dummies\\": "tests/Dummies"
         }
     },
     "scripts": {
