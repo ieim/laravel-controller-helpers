@@ -2,10 +2,17 @@
 
 namespace Ieim\LaravelControllerHelpers\Tests;
 
-use PHPUnit\Framework\TestCase;
+use Brain\Monkey;
 use Mockery\Adapter\Phpunit\MockeryPHPUnitIntegration;
+use PHPUnit\Framework\TestCase;
 
 class BaseTestCase extends TestCase
 {
     use MockeryPHPUnitIntegration;
+
+    protected function tearDown(): void
+    {
+        Monkey\tearDown();
+        parent::tearDown();
+    }
 }
