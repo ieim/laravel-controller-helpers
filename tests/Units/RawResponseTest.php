@@ -5,29 +5,27 @@ namespace Ieim\LaravelControllerHelpers\Tests;
 use Exception;
 use Ieim\LaravelContracts\Contracts\ControllerHelpers\RawResponseInterface;
 use Ieim\LaravelContracts\Dummies\Contracts\ControllerHelpers\Operations\DummyOperation;
+use Ieim\LaravelControllerHelpers\RawResponse;
 use Illuminate\Support\Collection;
 
 class RawResponseTest extends BaseTestCase
 {
     public function rawResponseProvider(): array
     {
-        return [
-            [ new RawResponse() ],
-        ];
-    }
+        $data = collect(['test' => true]);
+        $operation = new DummyOperation();
 
-    public function operationProvider(): array
-    {
         return [
-            [ new DummyOperation() ],
+            [ RawResponse::fromControllerWithData($operation, $data), $operation, $data ],
         ];
     }
 
     /**
-     * @dataProvider operationProvider
+     * @param RawResponse $rawResponse
      * @param DummyOperation $operation
+     * @dataProvider rawResponseProvider
      */
-    public function testFromController(DummyOperation $operation) :void
+    public function testFromController(RawResponse $rawResponse, DummyOperation $operation) :void
     {
         $expected = RawResponseInterface::class;
         $actual = RawResponse::fromController($operation);
@@ -36,30 +34,21 @@ class RawResponseTest extends BaseTestCase
     }
 
     /**
-     * @dataProvider operationProvider
+     * @param RawResponse $rawResponse
      * @param DummyOperation $operation
+     * @dataProvider rawResponseProvider
      */
-    public function testFromControllerWithData(DummyOperation $operation) :void
-    {
-        $data = collect();
+    public function testFromControllerWithData(
+        RawResponse $rawResponse,
+        DummyOperation $operation,
+        Collection $data
+    ) :void {
+
         $expected = RawResponseInterface::class;
         $actual = RawResponse::fromControllerWithData($operation, $data);
 
         $this->assertInstanceOf($expected, $actual);
-    }
-
-    /**
-     * @param RawResponse $rawResponse
-     * @dataProvider rawResponseProvider
-     */
-    public function testPath(
-        RawResponse $rawResponse
-    ) : void {
-
-        $expected = 'dummy_path';
-        $actual = $rawResponse->path();
-
-        $this->assertEquals($expected, $actual);
+        $this->assertEquals($data, $actual->data());
     }
 
     /**
@@ -67,12 +56,12 @@ class RawResponseTest extends BaseTestCase
      * @dataProvider rawResponseProvider
      */
     public function testData(
-        RawResponse $rawResponse
+        RawResponse $rawResponse,
+        DummyOperation $dummyOperation,
+        Collection $data
     ) : void {
 
-        $expected = collect([
-            'dummy' => 'data',
-        ]);
+        $expected = $data;
         $actual = $rawResponse->data();
 
         $this->assertInstanceOf(Collection::class, $actual);
@@ -85,13 +74,16 @@ class RawResponseTest extends BaseTestCase
      * @dataProvider rawResponseProvider
      */
     public function testAppend(
-        RawResponse $rawResponse
+        RawResponse $rawResponse,
+        DummyOperation $operation,
+        Collection $data
     ) : void {
 
-        $append = collect();
-        $expected = 'dummy_append';
-        $this->expectErrorMessage($expected);
+        $append = collect(['test2' => true]);
+        $expected = $data->merge($append);
         $rawResponse->append($append);
+        $actual = $rawResponse->data();
+        $this->assertEquals($expected, $actual);
     }
 
     /**
@@ -100,13 +92,16 @@ class RawResponseTest extends BaseTestCase
      * @dataProvider rawResponseProvider
      */
     public function testAppendAssocArray(
-        RawResponse $rawResponse
+        RawResponse $rawResponse,
+        DummyOperation $operation,
+        Collection $data
     ) : void {
 
-        $append = [];
-        $expected = 'dummy_append_assoc_array';
-        $this->expectErrorMessage($expected);
+        $append = ['test2' => true];
+        $expected = $data->merge(collect($append));
         $rawResponse->appendAssocArray($append);
+        $actual = $rawResponse->data();
+        $this->assertEquals($expected, $actual);
     }
 
     /**
@@ -118,8 +113,9 @@ class RawResponseTest extends BaseTestCase
         RawResponse $rawResponse
     ) : void {
 
-        $expected = 'dummy_reset';
-        $this->expectErrorMessage($expected);
+        $expected = collect();
         $rawResponse->reset();
+        $actual = $rawResponse->data();
+        $this->assertEquals($expected, $actual);
     }
 }
