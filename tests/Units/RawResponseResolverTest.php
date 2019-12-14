@@ -4,9 +4,7 @@ namespace Ieim\LaravelControllerHelpers\Tests;
 
 use Brain\Monkey\Functions;
 use Ieim\LaravelContracts\Dummies\Contracts\ControllerHelpers\DummyRawResponse;
-use Ieim\LaravelContracts\Dummies\Contracts\ControllerHelpers\Paths\DummyPath;
-use Ieim\LaravelControllerHelpers\Dummies\DummyCollection;
-use Ieim\LaravelControllerHelpers\Dummies\DummyResource;
+use Ieim\LaravelContracts\Dummies\Contracts\Paths\DummyPath;
 use Ieim\LaravelControllerHelpers\RawResponseResolver;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\JsonResponse;
@@ -14,6 +12,9 @@ use Mockery;
 
 class RawResponseResolverTest extends BaseTestCase
 {
+    /**
+     * @return array
+     */
     public function rawResponseResolverProvider(): array
     {
         return [
@@ -78,33 +79,13 @@ class RawResponseResolverTest extends BaseTestCase
     ) : void {
 
         $jsonResponseMock = Mockery::mock('Illuminate\Http\JsonResponse');
-        $jsonResourceMock = Mockery::mock('Illuminate\Http\Resources\Json\JsonResource');
+        $jsonResourceMock = Mockery::mock('overload:Illuminate\Http\Resources\Json\JsonResource');
         $jsonResourceMock->shouldReceive('response')
             ->andReturn($jsonResponseMock);
 
         $expected = JsonResponse::class;
-        $actual = $rawResponseResolver->toResponse(DummyResource::class, $rawResponse);
 
-        $this->assertInstanceOf($expected, $actual);
-    }
-
-    /**
-     * @param RawResponseResolver $rawResponseResolver
-     * @param DummyRawResponse $rawResponse
-     * @dataProvider rawResponseResolverProvider
-     */
-    public function testToResponseFromCollection(
-        RawResponseResolver $rawResponseResolver,
-        DummyRawResponse $rawResponse
-    ) : void {
-
-        $jsonResponseMock = Mockery::mock('Illuminate\Http\JsonResponse');
-        $jsonCollectionMock = Mockery::mock('Illuminate\Http\Resources\Json\ResourceCollection');
-        $jsonCollectionMock->shouldReceive('response')
-            ->andReturn($jsonResponseMock);
-
-        $expected = JsonResponse::class;
-        $actual = $rawResponseResolver->toResponse(DummyCollection::class, $rawResponse);
+        $actual = $rawResponseResolver->toResponse($rawResponse);
 
         $this->assertInstanceOf($expected, $actual);
     }

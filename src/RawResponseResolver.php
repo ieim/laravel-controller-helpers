@@ -2,9 +2,9 @@
 
 namespace Ieim\LaravelControllerHelpers;
 
-use Ieim\LaravelContracts\Contracts\ControllerHelpers\Paths\PathInterface;
 use Ieim\LaravelContracts\Contracts\ControllerHelpers\RawResponseInterface;
 use Ieim\LaravelContracts\Contracts\ControllerHelpers\RawResponseResolverInterface;
+use Ieim\LaravelContracts\Contracts\Paths\PathInterface;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\JsonResponse;
 
@@ -30,8 +30,9 @@ class RawResponseResolver implements RawResponseResolverInterface
         return response()->json($response->data());
     }
 
-    public function toResponse(string $jsonResourceName, RawResponseInterface $response): JsonResponse
+    public function toResponse(RawResponseInterface $response): JsonResponse
     {
-        return (new $jsonResourceName($response->data()))->response();
+        $jsonResourceClassName = $this->path->toResourceClassName($response->operation());
+        return (new $jsonResourceClassName($response->data()))->response();
     }
 }
