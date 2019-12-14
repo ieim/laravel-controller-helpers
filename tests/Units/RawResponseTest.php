@@ -118,4 +118,19 @@ class RawResponseTest extends BaseTestCase
         $actual = $rawResponse->data();
         $this->assertEquals($expected, $actual);
     }
+
+    /**
+     * @param RawResponse $rawResponse
+     * @throws Exception
+     * @dataProvider rawResponseProvider
+     */
+    public function testOperation(
+        RawResponse $rawResponse,
+        DummyOperation $operation
+    ) : void {
+
+        $expected = $operation;
+        $actual = $rawResponse->operation();
+        $this->assertEquals($expected, $actual);
+    }
 }
