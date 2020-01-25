@@ -22,7 +22,7 @@ class RawResponseResolver implements RawResponseResolverInterface
 
     public function toView(RawResponseInterface $response): View
     {
-        return view($this->path->toBlade($response->operation()), $response->data());
+        return view($this->path->resolve($response->operation()), $response->data());
     }
 
     public function toJson(RawResponseInterface $response): JsonResponse
@@ -32,7 +32,7 @@ class RawResponseResolver implements RawResponseResolverInterface
 
     public function toResponse(RawResponseInterface $response): JsonResponse
     {
-        $jsonResourceClassName = $this->path->toResourceClassName($response->operation());
+        $jsonResourceClassName = $this->path->resolve($response->operation());
         return (new $jsonResourceClassName($response->data()))->response();
     }
 }
