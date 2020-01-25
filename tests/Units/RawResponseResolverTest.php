@@ -84,6 +84,9 @@ class RawResponseResolverTest extends BaseTestCase
             ->andReturn($jsonResponseMock);
 
         $expected = JsonResponse::class;
+        $dummyResolveMock = \Mockery::mock('overload:dummy_resolve');
+        $dummyResolveMock->shouldReceive('response')
+            ->andReturn($jsonResponseMock);
 
         $actual = $rawResponseResolver->toResponse($rawResponse);
 
