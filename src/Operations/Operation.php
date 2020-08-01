@@ -21,6 +21,7 @@ class Operation implements OperationInterface
      * Operation constructor.
      *
      * @param string $operation
+     * @param Collection $operations
      */
     public function __construct(string $operation, Collection $operations)
     {

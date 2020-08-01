@@ -7,6 +7,8 @@ use Ieim\LaravelContracts\Contracts\ControllerHelpers\RawResponseResolverInterfa
 use Ieim\LaravelContracts\Contracts\Paths\PathInterface;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Resources\Json\JsonResource;
+use Webmozart\Assert\Assert;
 
 class RawResponseResolver implements RawResponseResolverInterface
 {
@@ -15,24 +17,46 @@ class RawResponseResolver implements RawResponseResolverInterface
      */
     private $path;
 
+    /**
+     * RawResponseResolver constructor.
+     * @param PathInterface $path
+     */
     public function __construct(PathInterface $path)
     {
         $this->path = $path;
     }
 
+    /**
+     * @param RawResponseInterface $response
+     * @return View
+     */
     public function toView(RawResponseInterface $response): View
     {
-        return view($this->path->resolve($response->operation()), $response->data());
+        $result = view($this->path->resolve($response->operation()), $response->data());
+        Assert::isInstanceOf($result, View::class);
+        return $result;
     }
 
+    /**
+     * @param RawResponseInterface $response
+     * @return JsonResponse
+     */
     public function toJson(RawResponseInterface $response): JsonResponse
     {
-        return response()->json($response->data());
+        $result = response()->json($response->data());
+        Assert::isInstanceOf($result, JsonResponse::class);
+        return $result;
     }
 
+    /**
+     * @param RawResponseInterface $response
+     * @return JsonResponse
+     */
     public function toResponse(RawResponseInterface $response): JsonResponse
     {
         $jsonResourceClassName = $this->path->resolve($response->operation());
-        return (new $jsonResourceClassName($response->data()))->response();
+        $resource = new $jsonResourceClassName($response->data());
+        Assert::isInstanceOf($resource, JsonResource::class);
+        return $resource->response();
     }
 }
