@@ -18,7 +18,7 @@
     ],
     "require": {
         "php": ">=7.3.0",
-        "ieim/laravel-contracts": "dev-master",
+        "ieim/laravel-contracts": "^0.2.0",
         "webmozart/assert": "^1.9"
     },
     "require-dev": {
